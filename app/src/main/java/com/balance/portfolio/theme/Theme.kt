@@ -1,4 +1,4 @@
-package com.balance.portfolio.ui.theme
+package com.balance.portfolio.theme
 
 import android.app.Activity
 import android.os.Build

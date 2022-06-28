@@ -1,4 +1,4 @@
-package com.balance.portfolio.ui.theme
+package com.balance.portfolio.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
