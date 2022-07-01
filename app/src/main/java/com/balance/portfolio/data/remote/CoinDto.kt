@@ -12,6 +12,7 @@ data class CoinDto(
 fun CoinDto.toCoin(): Coin{
     return Coin(
         price = rate,
-        name = "todo_name"
+        name = "todo_name",
+        amount = 42.0
     )
 }
