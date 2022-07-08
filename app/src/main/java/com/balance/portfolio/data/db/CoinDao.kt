@@ -1,6 +1,5 @@
 package com.balance.portfolio.data.db
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -22,14 +21,14 @@ interface CoinDao {
     @Query("DELETE FROM coin_table")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM coin_table ORDER BY uid DESC LIMIT 1")
-    suspend fun getOneCoin(): CoinEntity?
+    @Query("SELECT * FROM coin_table WHERE uid =:coinId")
+    suspend fun getOneCoin(coinId: Int): CoinEntity?
 
     @Query("SELECT * FROM coin_table ORDER BY uid DESC")
-    fun getAllTasksDesc(): LiveData<List<CoinEntity>>
+    fun getAllCoinsDesc(): List<CoinEntity>
 
     @Query("SELECT * FROM coin_table ORDER BY uid ASC")
-    fun getAllTasksAsc(): LiveData<List<CoinEntity>>
+    fun getAllCoinsAsc(): List<CoinEntity>
 
     @Query("SELECT COUNT(*) FROM coin_table")
     suspend fun getCount(): Int
