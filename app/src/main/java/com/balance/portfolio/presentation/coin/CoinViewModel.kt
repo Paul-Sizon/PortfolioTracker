@@ -1,5 +1,8 @@
-package com.balance.portfolio.presentation
+package com.balance.portfolio.presentation.coin
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +21,10 @@ class CoinViewModel @Inject constructor(
     private val getOneLocalCoinUseCase: GetOneLocalCoinUseCase
 ) : ViewModel() {
 
+    var state by mutableStateOf(CoinState())
+
+
+
     private val _coin = MutableLiveData<Coin>()
     val coin: LiveData<Coin> = _coin
 
@@ -26,16 +33,28 @@ class CoinViewModel @Inject constructor(
 
     private fun getLocalCoin() {
         viewModelScope.launch(Dispatchers.IO) {
+            state = state.copy(isLoading = true)
+
             getOneLocalCoinUseCase.invoke().onEach { result ->
                 when (result) {
                     is Resource.Success -> {
-                        _coin.value = result.data!!
+//                        _coin.value = result.data!!
+                        state = state.copy(
+                            coin = result.data,
+                            isLoading = false,
+                            error = null
+                        )
                     }
                     is Resource.Error -> {
-                        _error.value = result.message!!
+//                        _error.value = result.message!!
+                        state = state.copy(
+                            isLoading = false,
+                            error = result.message,
+                            coin = null
+                        )
                     }
                     is Resource.Loading -> {
-                        //todo: loading
+                        // nothing
                     }
                 }
             }

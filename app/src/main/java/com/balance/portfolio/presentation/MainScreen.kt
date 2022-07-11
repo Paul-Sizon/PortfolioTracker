@@ -13,15 +13,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.asFlow
 import com.balance.portfolio.domain.model.Coin
+import com.balance.portfolio.presentation.coin.CoinViewModel
 import com.balance.portfolio.theme.PortfolioTheme
+import javax.inject.Inject
 
 val mock_coins = listOf<Coin>(Coin("btc", 5.0, 1.0), Coin("eth", 0.2, 1.0))
 
 @Composable
 fun MainScreen(
-    viewModel: CoinViewModel = hiltViewModel()
+    viewModel: CoinViewModel = hiltViewModel<CoinViewModel>()
 ) {
-    val coin = viewModel.coin.asFlow()
+    val state = viewModel.state
+    state.coin?.let { Element(coin = it) }
 
     LazyColumn() {
         items(mock_coins) { coin ->
