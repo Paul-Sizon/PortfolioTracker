@@ -11,11 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.asFlow
 import com.balance.portfolio.domain.model.Coin
 import com.balance.portfolio.presentation.coin.CoinViewModel
 import com.balance.portfolio.theme.PortfolioTheme
-import javax.inject.Inject
 
 val mock_coins = listOf<Coin>(Coin("btc", 5.0, 1.0), Coin("eth", 0.2, 1.0))
 

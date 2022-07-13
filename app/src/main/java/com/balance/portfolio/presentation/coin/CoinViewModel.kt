@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.balance.portfolio.common.Resource
 import com.balance.portfolio.domain.model.Coin
 import com.balance.portfolio.domain.use_cases.getOneLocalCoin.GetOneLocalCoinUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import javax.inject.Inject
 
 //todo: add state like Phillip has
 
+@HiltViewModel
 class CoinViewModel @Inject constructor(
     private val getOneLocalCoinUseCase: GetOneLocalCoinUseCase
 ) : ViewModel() {
@@ -31,11 +33,11 @@ class CoinViewModel @Inject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    private fun getLocalCoin() {
+    private fun getLocalCoin(coinId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isLoading = true)
 
-            getOneLocalCoinUseCase.invoke().onEach { result ->
+            getOneLocalCoinUseCase.invoke(coinId).onEach { result ->
                 when (result) {
                     is Resource.Success -> {
 //                        _coin.value = result.data!!

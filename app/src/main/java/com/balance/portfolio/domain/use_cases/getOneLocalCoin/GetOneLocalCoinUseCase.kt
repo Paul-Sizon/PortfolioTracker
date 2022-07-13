@@ -12,9 +12,8 @@ import javax.inject.Inject
 
 class GetOneLocalCoinUseCase @Inject constructor(
     private val repository: CoinRepository,
-    private val coinId: Int
 ) {
-    operator fun invoke(): Flow<Resource<Coin>> = flow {
+    operator fun invoke(coinId: Int): Flow<Resource<Coin>> = flow {
         try {
             emit(Resource.Loading<Coin>())
             val coins = repository.getLocalCoin(coinId)
