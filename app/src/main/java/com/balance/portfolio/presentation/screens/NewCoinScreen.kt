@@ -20,11 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.balance.portfolio.presentation.coin.CoinViewModel
 
 //todo: add Coin, save it to db, better ui
 @Composable
-fun NewCoinScreen(navController: NavController) {
+fun NewCoinScreen(
+    navController: NavController,
+    viewModel: CoinViewModel = hiltViewModel<CoinViewModel>()
+) {
+    val data =""
     Column(
         modifier = Modifier
             .background(Color.White),
@@ -34,7 +40,7 @@ fun NewCoinScreen(navController: NavController) {
     {
         EnterCoinName()
         EnterAmount()
-        AddButton(navController)
+        AddButton(navController, viewModel)
     }
 }
 
@@ -65,9 +71,15 @@ fun EnterAmount() {
 
 
 @Composable
-fun AddButton(navController: NavController) {
+fun AddButton(
+    navController: NavController,
+    viewModel: CoinViewModel
+) {
     Button(
-        onClick = { navController.navigate(Screen.MainScreen.route) })
+        onClick = {
+//            viewModel.insert(coin)
+            navController.navigate(Screen.MainScreen.route)
+        })
     {
         Icon(imageVector = Icons.Default.Add, contentDescription = "add")
     }

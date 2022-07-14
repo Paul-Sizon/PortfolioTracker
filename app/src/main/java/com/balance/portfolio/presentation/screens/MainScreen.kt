@@ -33,7 +33,7 @@ fun MainScreen(
     navController: NavController,
     viewModel: CoinViewModel = hiltViewModel<CoinViewModel>()
 ) {
-    val state = viewModel.state
+    val state = viewModel.coinState
     state.coin?.let { Element(coin = it) }
 
     Scaffold(

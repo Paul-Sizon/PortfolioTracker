@@ -4,6 +4,8 @@ import com.balance.portfolio.common.Resource
 import com.balance.portfolio.data.db.CoinDatabase
 import com.balance.portfolio.data.db.entities.CoinEntity
 import com.balance.portfolio.domain.repository.CoinRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,18 +31,30 @@ class CoinRepositoryImpl @Inject constructor(
         }
     }
 
-//
-//    override suspend fun getAllLocalCoins(query: String): Flow<Resource<List<CoinEntity>>> {
-//        return flow {
-//            emit(Resource.Loading(true))
-//            val coin = dao.getAllCoinsDesc()
-//            emit(
-//                Resource.Success(
-//                    data = coin
-//                )
-//            )
-//        }
-//    }
+    override suspend fun insertLocalCoin(coin: CoinEntity): Resource<CoinEntity> {
+        return try {
+            dao.insert(coin)
+            Resource.Success<CoinEntity>(coin)
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+            Resource.Error<CoinEntity>(e.localizedMessage ?: "null pointer exception")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Resource.Error<CoinEntity>("io exception")
+        }
+    }
+
+    override suspend fun getAllLocalCoins(): Flow<Resource<List<CoinEntity>>> {
+        return flow {
+            emit(Resource.Loading())
+            val coin = dao.getAllCoinsDesc()
+            emit(
+                Resource.Success(
+                    data = coin
+                )
+            )
+        }
+    }
     //todo: api call to get the price
 //
 //    override suspend fun getRemoteCoin(query: String): Flow<Resource<CoinEntity>> {

@@ -3,6 +3,7 @@ package com.balance.portfolio.data.mapping
 import com.balance.portfolio.data.db.entities.CoinEntity
 import com.balance.portfolio.data.remote.CoinDto
 import com.balance.portfolio.domain.model.Coin
+import java.util.*
 
 fun CoinEntity.toCoin(): Coin {
     return Coin(
@@ -11,6 +12,16 @@ fun CoinEntity.toCoin(): Coin {
         price = 1111.0
     )
 }
+
+fun Coin.toCoinEntity(): CoinEntity {
+    return CoinEntity(
+        name = name,
+        amount = amount,
+        uid = UUID.randomUUID().variant()
+    )
+}
+
+
 
 fun CoinDto.toCoin(): Coin {
     return Coin(
