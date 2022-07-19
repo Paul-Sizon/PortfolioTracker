@@ -12,7 +12,7 @@ interface CoinRepository {
 
      suspend fun insertLocalCoin(coin: CoinEntity): Resource<CoinEntity>
 
-    suspend fun getAllLocalCoins(): Flow<Resource<List<CoinEntity>>>
+    suspend fun getAllLocalCoins(): Flow<List<CoinEntity>>
 //
 //
 //    suspend fun getRemoteCoin(

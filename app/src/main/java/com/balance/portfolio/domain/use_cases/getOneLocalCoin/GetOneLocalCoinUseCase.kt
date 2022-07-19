@@ -15,7 +15,7 @@ class GetOneLocalCoinUseCase @Inject constructor(
 ) {
     operator fun invoke(coinId: Int): Flow<Resource<Coin>> = flow {
         try {
-            emit(Resource.Loading<Coin>())
+//            emit(Resource.Loading<Coin>())
             val coins = repository.getLocalCoin(coinId)
 
             emit(Resource.Success(coins.data!!.toCoin()))

@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.balance.portfolio.data.db.entities.CoinEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoinDao {
@@ -25,7 +26,7 @@ interface CoinDao {
     suspend fun getOneCoin(coinId: Int): CoinEntity?
 
     @Query("SELECT * FROM coin_table ORDER BY uid DESC")
-    fun getAllCoinsDesc(): List<CoinEntity>
+    fun getAllCoinsDesc(): Flow<List<CoinEntity>>
 
     @Query("SELECT * FROM coin_table ORDER BY uid ASC")
     fun getAllCoinsAsc(): List<CoinEntity>

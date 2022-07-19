@@ -25,7 +25,7 @@ import com.balance.portfolio.domain.model.Coin
 import com.balance.portfolio.presentation.coin.CoinViewModel
 import com.balance.portfolio.theme.PortfolioTheme
 
-val mock_coins = listOf<Coin>(Coin("btc", 5.0, 1.0), Coin("eth", 0.2, 1.0))
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,8 +33,8 @@ fun MainScreen(
     navController: NavController,
     viewModel: CoinViewModel = hiltViewModel<CoinViewModel>()
 ) {
-    val state = viewModel.coinState
-    state.coin?.let { Element(coin = it) }
+    val state = viewModel.coinsState
+    val mockState = viewModel.mockState
 
     Scaffold(
         floatingActionButtonPosition = FabPosition.Center,
@@ -56,10 +56,12 @@ fun MainScreen(
         topBar = {},
         bottomBar = {},
         content = { contentPadding ->
-            LazyColumn(modifier = Modifier.padding(contentPadding)) {
-                items(mock_coins) { coin ->
-                    Element(coin = coin)
-                    Spacer(modifier = Modifier.padding(bottom = 4.dp))
+            state.coins?.let {
+                LazyColumn(modifier = Modifier.padding(contentPadding)) {
+                    items(it) { coin ->
+                        Element(coin = coin)
+                        Spacer(modifier = Modifier.padding(bottom = 4.dp))
+                    }
                 }
             }
         })

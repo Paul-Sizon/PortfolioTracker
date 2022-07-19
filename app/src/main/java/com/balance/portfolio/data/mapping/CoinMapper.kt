@@ -9,15 +9,14 @@ fun CoinEntity.toCoin(): Coin {
     return Coin(
         name = name ?: "",
         amount = amount ?: 555.0,
-        price = 1111.0
+        price = 0.0
     )
 }
 
 fun Coin.toCoinEntity(): CoinEntity {
     return CoinEntity(
         name = name,
-        amount = amount,
-        uid = UUID.randomUUID().variant()
+        amount = amount
     )
 }
 

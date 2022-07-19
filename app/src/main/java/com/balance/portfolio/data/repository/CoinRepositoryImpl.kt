@@ -44,17 +44,7 @@ class CoinRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllLocalCoins(): Flow<Resource<List<CoinEntity>>> {
-        return flow {
-            emit(Resource.Loading())
-            val coin = dao.getAllCoinsDesc()
-            emit(
-                Resource.Success(
-                    data = coin
-                )
-            )
-        }
-    }
+    override suspend fun getAllLocalCoins() = dao.getAllCoinsDesc()
     //todo: api call to get the price
 //
 //    override suspend fun getRemoteCoin(query: String): Flow<Resource<CoinEntity>> {

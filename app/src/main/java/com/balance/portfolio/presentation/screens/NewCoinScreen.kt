@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.balance.portfolio.domain.model.Coin
 import com.balance.portfolio.presentation.coin.CoinViewModel
 
 //todo: add Coin, save it to db, better ui
@@ -38,49 +39,55 @@ fun NewCoinScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
-        EnterCoinName()
-        EnterAmount()
-        AddButton(navController, viewModel)
-    }
-}
-
-@Composable
-fun EnterCoinName() {
-    var text by rememberSaveable { mutableStateOf("") }
-    TextField(
-        value = text,
-        onValueChange = {
-            text = it
-        },
-        label = { Text("Coin name") }
-    )
-}
-
-@Composable
-fun EnterAmount() {
-    var text by rememberSaveable { mutableStateOf("") }
-    TextField(
-        value = text,
-        onValueChange = {
-            text = it
-        },
-        label = { Text("Amount") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-    )
-}
+//        EnterCoinName()
+//        EnterAmount()
+//        AddButton(navController, viewModel)
+        var name by rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = name,
+            onValueChange = {
+                name = it
+            },
+            label = { Text("Coin name") }
+        )
 
 
-@Composable
-fun AddButton(
-    navController: NavController,
-    viewModel: CoinViewModel
-) {
-    Button(
-        onClick = {
-//            viewModel.insert(coin)
-            navController.navigate(Screen.MainScreen.route)
-        })
-    {
-        Icon(imageVector = Icons.Default.Add, contentDescription = "add")
+        var amount by rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = amount,
+            onValueChange = {
+                amount = it
+            },
+            label = { Text("Amount") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        //todo change it to API price
+        var price by rememberSaveable { mutableStateOf("") }
+        TextField(
+            value = price,
+            onValueChange = {
+                price = it
+            },
+            label = { Text("price") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+
+        Button(
+            onClick = {
+            viewModel.insert(
+                Coin(
+                    name = name,
+                    amount = amount.toDouble(),
+                    price = 0.0,
+                )
+            )
+                navController.navigate(Screen.MainScreen.route)
+            })
+        {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "add")
+        }
+
     }
 }

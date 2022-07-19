@@ -9,7 +9,7 @@ data class CoinState(
 )
 
 data class CoinsState(
-    val coin: List<Coin>? = null,
+    val coins: List<Coin>? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
