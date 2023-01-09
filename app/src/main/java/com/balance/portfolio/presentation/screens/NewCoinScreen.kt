@@ -39,9 +39,6 @@ fun NewCoinScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
-//        EnterCoinName()
-//        EnterAmount()
-//        AddButton(navController, viewModel)
         var name by rememberSaveable { mutableStateOf("") }
         TextField(
             value = name,

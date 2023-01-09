@@ -8,7 +8,7 @@ data class CoinState(
     val error: String? = null
 )
 
-data class CoinsState(
+data class CoinListState(
     val coins: List<Coin>? = null,
     val isLoading: Boolean = false,
     val error: String? = null

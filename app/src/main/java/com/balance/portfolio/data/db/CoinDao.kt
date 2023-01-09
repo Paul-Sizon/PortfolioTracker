@@ -26,7 +26,7 @@ interface CoinDao {
     suspend fun getOneCoin(coinId: Int): CoinEntity?
 
     @Query("SELECT * FROM coin_table ORDER BY uid DESC")
-    fun getAllCoinsDesc(): Flow<List<CoinEntity>>
+    fun getAllCoinsDesc(): List<CoinEntity>
 
     @Query("SELECT * FROM coin_table ORDER BY uid ASC")
     fun getAllCoinsAsc(): List<CoinEntity>

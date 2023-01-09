@@ -33,7 +33,7 @@ fun MainScreen(
     navController: NavController,
     viewModel: CoinViewModel = hiltViewModel<CoinViewModel>()
 ) {
-    val state = viewModel.coinsState
+    val state = viewModel.coinListState
     val mockState = viewModel.mockState
 
     Scaffold(
@@ -76,6 +76,8 @@ fun Element(coin: Coin) {
         Text(text = coin.price.toString())
         Spacer(modifier = Modifier.padding(horizontal = 30.dp))
         Text(text = coin.amount.toString())
+        Spacer(modifier = Modifier.padding(horizontal = 30.dp))
+        Text(text = coin.total.toString())
     }
 }
 

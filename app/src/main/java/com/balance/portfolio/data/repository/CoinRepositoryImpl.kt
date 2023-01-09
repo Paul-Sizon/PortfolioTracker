@@ -44,14 +44,26 @@ class CoinRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllLocalCoins() = dao.getAllCoinsDesc()
+    override suspend fun getAllLocalCoins(): Resource<List<CoinEntity>> {
+        return try {
+            val response = dao.getAllCoinsDesc()
+            Resource.Success<List<CoinEntity>>(response)
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+            Resource.Error<List<CoinEntity>>(e.localizedMessage ?: "null pointer exception")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Resource.Error<List<CoinEntity>>("io exception")
+        }
+    }
+
+    override suspend fun getRemoteCoin(query: String): Resource<CoinEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRemoteCoins(query: String): Resource<List<CoinEntity>> {
+        TODO("Not yet implemented")
+    }
     //todo: api call to get the price
-//
-//    override suspend fun getRemoteCoin(query: String): Flow<Resource<CoinEntity>> {
-//
-//    }
-//
-//    override suspend fun getRemoteCoins(query: String): Flow<Resource<List<CoinEntity>>> {
-//
-//    }
+
 }

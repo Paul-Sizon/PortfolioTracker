@@ -10,29 +10,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balance.portfolio.common.Resource
 import com.balance.portfolio.data.mapping.toCoin
+import com.balance.portfolio.data.mapping.toCoinEntity
 import com.balance.portfolio.domain.model.Coin
-import com.balance.portfolio.domain.use_cases.getAllLocalCoins.GetAllCoinsUseCase
-import com.balance.portfolio.domain.use_cases.getOneLocalCoin.GetOneLocalCoinUseCase
-import com.balance.portfolio.domain.use_cases.insertCoinUseCase.InsertCoinUseCase
+import com.balance.portfolio.domain.repository.CoinRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinViewModel @Inject constructor(
-    private val getAllCoinsUseCase: GetAllCoinsUseCase,
-    private val getOneLocalCoinUseCase: GetOneLocalCoinUseCase,
-    private val insertCoinUseCase: InsertCoinUseCase
+    private val repository: CoinRepository
 ) : ViewModel() {
     val TAG = "pew CoinViewModel"
 
     var coinState by mutableStateOf(CoinState())
-    var coinsState by mutableStateOf(CoinsState())
+    var coinListState by mutableStateOf(CoinListState())
 
-    var mockState by mutableStateOf(CoinsState())
+    var mockState by mutableStateOf(CoinListState())
     val mock_coins = listOf<Coin>(Coin("btc", 5.0, 1.0), Coin("eth", 0.2, 1.0))
 
     private val _coin = MutableLiveData<Coin>()
@@ -45,39 +40,42 @@ class CoinViewModel @Inject constructor(
         getAllLocalCoins()
     }
 
+    // todo : fix loading , implement amount * price
     private fun getAllLocalCoins() {
         viewModelScope.launch(Dispatchers.Main) {
-            coinsState = coinsState.copy(isLoading = true)
+            coinListState = coinListState.copy(isLoading = true)
             Log.i(TAG, "getAllLocalCoins: called")
             mockState = mockState.copy(
                 coins = mock_coins,
                 isLoading = false,
                 error = null
             )
-            getAllCoinsUseCase().onStart { Resource.Loading }.collect() { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        coinsState = coinsState.copy(
-                            coins = result.data,
-                            isLoading = false,
-                            error = null
-                        )
-                        Log.i(TAG, "getAllLocalCoins: Success, ${result.data}")
-                    }
-                    is Resource.Error -> {
-                        coinState = coinState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            coin = null
-                        )
-                        Log.i(TAG, "getAllLocalCoins: Error, ${result.message}")
-                    }
-                    else -> {}
-//                     is Resource.Loading -> {
-//                        // nothing
-//                        Log.i(TAG, "getAllLocalCoins: Loading")
-//                    }
+            val response = repository.getAllLocalCoins()
+
+            when (response) {
+                is Resource.Success -> {
+                    val coins = response.data?.map { it.toCoin() }
+                    coinListState = coinListState.copy(
+                        coins = coins,
+                        isLoading = false,
+                        error = null
+                    )
+                    Log.i(TAG, "getAllLocalCoins: Success, ${response.data}")
                 }
+                is Resource.Error -> {
+                    coinState = coinState.copy(
+                        isLoading = false,
+                        error = response.message,
+                        coin = null
+                    )
+                    Log.i(TAG, "getAllLocalCoins: Error, ${response.message}")
+                }
+                is Resource.Loading -> {
+                    // nothing
+                    Log.i(TAG, "getAllLocalCoins: Loading")
+                }
+                else -> {}
+
             }
         }
     }
@@ -86,27 +84,27 @@ class CoinViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             coinState = coinState.copy(isLoading = true)
 
-            getOneLocalCoinUseCase.invoke(coinId).onEach { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        coinState = coinState.copy(
-                            coin = result.data,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                    is Resource.Error -> {
-                        coinState = coinState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            coin = null
-                        )
-                    }
-                    else ->{}
+            val response = repository.getLocalCoin(coinId)
+
+            when (response) {
+                is Resource.Success -> {
+                    coinState = coinState.copy(
+                        coin = response.data?.toCoin(),
+                        isLoading = false,
+                        error = null
+                    )
+                }
+                is Resource.Error -> {
+                    coinState = coinState.copy(
+                        isLoading = false,
+                        error = response.message,
+                        coin = null
+                    )
+                }
+                else -> {}
 //                    is Resource.Loading -> {
 //                        // nothing
 //                    }
-                }
             }
         }
     }
@@ -116,37 +114,41 @@ class CoinViewModel @Inject constructor(
             coinState = coinState.copy(isLoading = true)
             Log.i(TAG, "insert: method called ")
 
-            insertCoinUseCase.invoke(coin).also { result ->
-                Log.i(TAG, "insert: coinUsecase is called ")
-                when (result) {
-                    is Resource.Success -> {
-                        coinState = coinState.copy(
-                            coin = result.data?.toCoin(),
-                            isLoading = false,
-                            error = null
-                        )
-                        Log.i(TAG, "insert: coin Success ${result.data}")
-                    }
-                    is Resource.Error -> {
-                        coinState = coinState.copy(
-                            isLoading = false,
-                            error = result.message,
-                            coin = null
-                        )
-                        Log.i(TAG, "insert: coin Error ${result.message} ")
-                    }
-//                    is Resource.Loading -> {
-//                        // nothing
-//                        Log.i(TAG, "insert: coin Loading ")
+            val response = repository.insertLocalCoin(coin.toCoinEntity())
+
+//            insertCoinUseCase.invoke(coin).also { result ->
+//                Log.i(TAG, "insert: coinUsecase is called ")
+//                when (result) {
+//                    is Resource.Success -> {
+//                        coinState = coinState.copy(
+//                            coin = result.data?.toCoin(),
+//                            isLoading = false,
+//                            error = null
+//                        )
+//                        Log.i(TAG, "insert: coin Success ${result.data}")
 //                    }
-                    else -> Log.i(TAG, "insert: coin Something else happend $result ")
-                }
-            }
+//                    is Resource.Error -> {
+//                        coinState = coinState.copy(
+//                            isLoading = false,
+//                            error = result.message,
+//                            coin = null
+//                        )
+//                        Log.i(TAG, "insert: coin Error ${result.message} ")
+//                    }
+////                    is Resource.Loading -> {
+////                        // nothing
+////                        Log.i(TAG, "insert: coin Loading ")
+////                    }
+//                    else -> Log.i(TAG, "insert: coin Something else happend $result ")
+//                }
+//            }
         }
     }
 
     fun update(coin: Coin) {
     }
+
+    fun refreshScreen(){}
 
     fun deleteOne(coin: Coin) {
     }

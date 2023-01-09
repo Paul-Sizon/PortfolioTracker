@@ -12,15 +12,14 @@ interface CoinRepository {
 
      suspend fun insertLocalCoin(coin: CoinEntity): Resource<CoinEntity>
 
-    suspend fun getAllLocalCoins(): Flow<List<CoinEntity>>
-//
-//
-//    suspend fun getRemoteCoin(
-//        query: String
-//    ): Flow<Resource<CoinEntity>>
-//
-//    suspend fun getRemoteCoins(
-//        query: String
-//    ): Flow<Resource<List<CoinEntity>>>
+    suspend fun getAllLocalCoins(): Resource<List<CoinEntity>>
+
+    suspend fun getRemoteCoin(
+        query: String
+    ): Resource<CoinEntity>
+
+    suspend fun getRemoteCoins(
+        query: String
+    ): Resource<List<CoinEntity>>
 
 }
